@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מה הכי סיזיפי בעבודה שלך?</title>
+<meta name="description" content="אני בונה כלים לאדריכלים שעובדים עם קלוד קוד. סמן מה הכי מציק לך ואחזור אליך.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&family=Noto+Sans+Hebrew:wdth,wght@62.5..100,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --panel: #151515;
+    --line: #2e2e2e;
+    --paper: #f2f2f0;
+    --mute: #a9a9a5;
+    --yellow: #f5b800;
+    --err: #ff6b5e;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    position: relative;
+    overflow-x: hidden;
+    background-color: var(--ink);
+    color: var(--paper);
+    font-family: "Heebo", system-ui, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .bg {
+    position: fixed; top: 0; left: 0; right: 0; height: 100vh; z-index: 0; pointer-events: none;
+    will-change: transform;
+    background:
+      linear-gradient(rgba(10,10,10,.35), rgba(10,10,10,.5)),
+      url("bg.webp") center bottom / cover no-repeat;
+  }
+  main {
+    position: relative; z-index: 1;
+    max-width: 560px; margin: 0 auto;
+    padding: 56px 20px 72px;
+  }
+  h1 {
+    margin: 0;
+    font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
+    font-weight: 900;
+    font-stretch: 68%;
+    font-size: clamp(3.3rem, 14.5vw, 5rem);
+    line-height: 1;
+  }
+  h1 em { font-style: normal; color: var(--yellow); }
+  .squig { display: block; width: 62%; max-width: 280px; height: 14px; margin: 14px 0 0; }
+  .lead {
+    margin: 22px 0 0;
+    font-size: 1.15rem;
+    color: var(--mute);
+    max-width: 34ch;
+  }
+  .lead strong { color: var(--paper); font-weight: 500; }
+
+  form { margin-top: 40px; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  legend { font-weight: 700; font-size: 1.05rem; padding: 0; margin-bottom: 12px; }
+
+  .opt { display: block; position: relative; margin: 0 0 10px; }
+  .opt input {
+    position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%;
+    margin: 0; cursor: pointer;
+  }
+  .opt span {
+    display: flex; align-items: center; gap: 14px;
+    min-height: 58px; padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-right: 4px solid var(--line);
+    border-radius: 6px;
+    font-size: 1.08rem; font-weight: 500;
+    transition: border-color .15s, background .15s;
+  }
+  .opt span::before {
+    content: ""; flex: none;
+    width: 22px; height: 22px;
+    border: 2px solid var(--mute); border-radius: 4px;
+    background: transparent center / 14px no-repeat;
+    transition: background-color .15s, border-color .15s;
+  }
+  .opt input:checked + span { border-color: var(--yellow); background: #1c1a10; }
+  .opt input:checked + span::before {
+    border-color: var(--yellow); background-color: var(--yellow);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 7.5l3.2 3L12 3.5' fill='none' stroke='%230a0a0a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  .opt input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 3px; }
+
+  .other-wrap { display: none; margin: -2px 0 10px; }
+  .other-wrap.on { display: block; }
+
+  .field { margin-top: 22px; }
+  label.t { display: block; font-weight: 700; margin-bottom: 8px; }
+  .hint { font-weight: 400; color: var(--mute); }
+  input[type=text], input[type=tel], textarea {
+    width: 100%;
+    background: var(--panel); color: var(--paper);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 14px 16px; font: inherit; font-size: 1.08rem;
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: #6d6d69; }
+  input[type=text]:focus-visible, input[type=tel]:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--yellow); outline-offset: 2px; border-color: var(--yellow);
+  }
+  input[type=tel] { direction: ltr; text-align: right; }
+  .err { color: var(--err); font-size: .95rem; margin-top: 8px; min-height: 1.4em; }
+
+  button {
+    width: 100%; margin-top: 18px;
+    background: var(--yellow); color: var(--ink);
+    border: 0; border-radius: 6px;
+    min-height: 60px; font: inherit; font-weight: 900; font-size: 1.25rem;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  button[disabled] { opacity: .6; cursor: wait; }
+  .fine { margin: 14px 0 0; font-size: .9rem; color: var(--mute); }
+
+  .hp, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .done { display: none; margin-top: 40px; padding: 26px 22px; background: var(--panel); border: 1px solid var(--line); border-right: 4px solid var(--yellow); border-radius: 6px; }
+  .done h2 { margin: 0 0 8px; font-size: 1.6rem; font-weight: 900; }
+  .done p { margin: 0; color: var(--mute); font-size: 1.08rem; }
+  body.sent form { display: none; }
+  body.sent .done { display: block; }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<main>
+  <h1>מה הכי <em>סיזיפי</em> בעבודה שלך?</h1>
+  <svg class="squig" viewBox="0 0 280 14" fill="none" aria-hidden="true"><path d="M2 9C60 3 120 12 180 6s70-2 98 1" stroke="#f5b800" stroke-width="3" stroke-linecap="round"/></svg>
+  <p class="lead">אני בונה כלים לאדריכלים, שרצים בתוך קלוד קוד ועושים את העבודה הזאת במקומך. <strong>סמן מה מציק לך ואחזור אליך.</strong></p>
+
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>מה אוכל לך הכי הרבה זמן? אפשר לסמן כמה</legend>
+      <label class="opt"><input type="checkbox" name="pain" value="היתרים ורשויות"><span>היתרים ורשויות</span></label>
+      <label class="opt"><input type="checkbox" name="pain" value="הצעות מחיר וכמויות"><span>הצעות מחיר וכמויות</span></label>
+      <label class="opt"><input type="checkbox" name="pain" value="כתיבת מפרטים"><span>כתיבת מפרטים</span></label>
+      <label class="opt"><input type="checkbox" name="pain" value="אחר" id="otherCb"><span>משהו אחר</span></label>
+      <div class="other-wrap" id="otherWrap">
+        <label class="sr" for="other">מה עוד?</label>
+        <textarea id="other" name="other" placeholder="ספר לי במשפט או שניים"></textarea>
+      </div>
+    </fieldset>
+
+    <div class="field">
+      <label class="t" for="name">שם <span class="hint">(לא חובה)</span></label>
+      <input type="text" id="name" name="name" autocomplete="name">
+    </div>
+    <div class="field">
+      <label class="t" for="phone">טלפון</label>
+      <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="050-0000000" aria-describedby="phoneErr" required>
+      <div class="err" id="phoneErr" role="alert"></div>
+    </div>
+
+    <div class="hp" aria-hidden="true"><label>אל תמלא <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <button type="submit" id="go">שלח</button>
+    <p class="fine">הטלפון ישמש רק כדי לחזור אליך בנושא הזה. בלי פרסומות.</p>
+  </form>
+
+  <section class="done" id="done" role="status" tabindex="-1">
+    <h2>קיבלתי</h2>
+    <p>אחזור אליך בקרוב לשיחה קצרה על מה שסימנת.</p>
+  </section>
+</main>
+
+<script>
+  // כתובת ה-Web app של Google Apps Script (ראה apps-script.gs).
+  // כל עוד היא ריקה, הטופס לא שומר כלום.
+  const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbyHaH5WglzTfX-uMmYup9tBUUF_shuPC0ozRNP7uu732o1fBug7ivavbtYKIVrnSK2R/exec";
+
+  // רחיפה: הרקע זז לאט מהתוכן. K הוא חלק המהירות של הרקע (0.5 = חצי מהירות הגלילה).
+  const bg = document.querySelector(".bg");
+  const K = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 0.5;
+  const moveBg = () => { bg.style.transform = `translate3d(0, ${-scrollY * K}px, 0)`; };
+  const sizeBg = () => {
+    const max = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+    bg.style.height = (innerHeight + max * K) + "px";
+    moveBg();
+  };
+  addEventListener("scroll", moveBg, { passive: true });
+  addEventListener("resize", sizeBg);
+  addEventListener("load", sizeBg);
+  new ResizeObserver(sizeBg).observe(document.body); // גובה הדף משתנה כשנפתח שדה "אחר" או מופיעה תודה
+  sizeBg();
+
+  const form = document.getElementById("f");
+  const otherCb = document.getElementById("otherCb");
+  const otherWrap = document.getElementById("otherWrap");
+  const phone = document.getElementById("phone");
+  const phoneErr = document.getElementById("phoneErr");
+  const go = document.getElementById("go");
+
+  otherCb.addEventListener("change", () => {
+    otherWrap.classList.toggle("on", otherCb.checked);
+    if (otherCb.checked) document.getElementById("other").focus();
+  });
+
+  const validPhone = v => /^0(5\d|[2-4689]|7\d)\d{7}$/.test(v.replace(/[\s-]/g, ""));
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    phoneErr.textContent = "";
+    if (!validPhone(phone.value)) {
+      phoneErr.textContent = "הכנס מספר טלפון ישראלי תקין, למשל 050-1234567";
+      phone.focus();
+      return;
+    }
+    const data = {
+      pains: [...form.querySelectorAll("input[name=pain]:checked")].map(i => i.value),
+      other: form.other.value.trim(),
+      name: form.name.value.trim(),
+      phone: phone.value.replace(/[\s-]/g, ""),
+      website: form.website.value,
+      sentAt: new Date().toISOString()
+    };
+    if (data.website) return; // בוט
+    go.disabled = true;
+    try {
+      if (FORM_ENDPOINT) {
+        // Apps Script לא מחזיר כותרות CORS, לכן no-cors ו-text/plain. את התשובה אי אפשר לקרוא, אבל כשל ברשת עדיין זורק שגיאה.
+        await fetch(FORM_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data)
+        });
+      } else {
+        console.warn("FORM_ENDPOINT ריק, התשובה לא נשמרה", data);
+      }
+      document.body.classList.add("sent");
+      document.getElementById("done").focus();
+      window.scrollTo({ top: 0 });
+    } catch (err) {
+      go.disabled = false;
+      phoneErr.textContent = "השליחה נכשלה. נסה שוב בעוד רגע.";
+    }
+  });
+</script>
+</body>
+</html>
