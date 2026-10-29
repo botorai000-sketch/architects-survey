@@ -124,6 +124,9 @@
   button:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
   button[disabled] { opacity: .6; cursor: wait; }
   .fine { margin: 14px 0 0; font-size: .9rem; color: var(--mute); }
+  .fine a { color: var(--paper); }
+  .consent { margin-top: 22px; }
+  .consent span { font-size: 1rem; font-weight: 400; }
 
   .hp, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
@@ -165,10 +168,16 @@
       <div class="err" id="phoneErr" role="alert"></div>
     </div>
 
+    <label class="opt consent">
+      <input type="checkbox" id="consent" name="consent" aria-describedby="consentErr">
+      <span>מסכים שיחזרו אליי בטלפון או בוואטסאפ בנושא הזה</span>
+    </label>
+    <div class="err" id="consentErr" role="alert"></div>
+
     <div class="hp" aria-hidden="true"><label>אל תמלא <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
     <button type="submit" id="go">שלח</button>
-    <p class="fine">הטלפון ישמש רק כדי לחזור אליך בנושא הזה. בלי פרסומות.</p>
+    <p class="fine">הפרטים ישמשו רק כדי לחזור אליך בנושא הזה, יישמרו אצלי בלבד ולא יועברו לאף גורם. למחיקת הפרטים או לשאלות: <a href="mailto:ledermanart@gmail.com">ledermanart@gmail.com</a></p>
   </form>
 
   <section class="done" id="done" role="status" tabindex="-1">
@@ -202,6 +211,8 @@
   const otherWrap = document.getElementById("otherWrap");
   const phone = document.getElementById("phone");
   const phoneErr = document.getElementById("phoneErr");
+  const consent = document.getElementById("consent");
+  const consentErr = document.getElementById("consentErr");
   const go = document.getElementById("go");
 
   otherCb.addEventListener("change", () => {
@@ -214,9 +225,15 @@
   form.addEventListener("submit", async e => {
     e.preventDefault();
     phoneErr.textContent = "";
+    consentErr.textContent = "";
     if (!validPhone(phone.value)) {
       phoneErr.textContent = "הכנס מספר טלפון ישראלי תקין, למשל 050-1234567";
       phone.focus();
+      return;
+    }
+    if (!consent.checked) {
+      consentErr.textContent = "כדי שאוכל לחזור אליך, סמן שאתה מסכים.";
+      consent.focus();
       return;
     }
     const data = {
@@ -224,6 +241,7 @@
       other: form.other.value.trim(),
       name: form.name.value.trim(),
       phone: phone.value.replace(/[\s-]/g, ""),
+      consent: "מסכים שיחזרו אליי בטלפון או בוואטסאפ בנושא הזה",
       website: form.website.value,
       sentAt: new Date().toISOString()
     };
